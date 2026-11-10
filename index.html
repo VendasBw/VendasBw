@@ -1,0 +1,1861 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BW Parfum Imports | Admin</title>
+    <style>
+        /* =============================================
+           VARIÁVEIS — TEMA CLARO SOFISTICADO
+        ============================================= */
+        :root {
+            --gold:        #b8860b;
+            --gold-light:  #d4af37;
+            --gold-pale:   #f5e6b0;
+            --gold-bg:     #fffbf0;
+            --cream:       #faf8f3;
+            --white:       #ffffff;
+            --bg:          #f2ede4;
+            --surface:     #ffffff;
+            --surface2:    #f8f5ef;
+            --border:      #e0d5c0;
+            --border2:     #ccc0a0;
+            --text:        #2c2416;
+            --text2:       #5a4e38;
+            --text3:       #8a7a60;
+            --green:       #1a7a3c;
+            --green-bg:    #e8f5ee;
+            --green-light: #2ea85a;
+            --red:         #c0392b;
+            --red-bg:      #fdf0ee;
+            --blue:        #1a5fa8;
+            --blue-bg:     #eaf2fb;
+            --purple:      #6b3fa0;
+            --purple-bg:   #f3eefb;
+            --orange:      #d06a00;
+            --orange-bg:   #fff3e0;
+            --shadow:      0 2px 12px rgba(180,150,80,0.10);
+            --shadow-md:   0 4px 24px rgba(180,150,80,0.15);
+            --shadow-lg:   0 8px 40px rgba(180,150,80,0.18);
+            --radius:      10px;
+            --radius-lg:   16px;
+            --radius-xl:   22px;
+            --transition:  0.18s ease;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            padding-bottom: 90px;
+            min-height: 100vh;
+        }
+
+        /* =============================================
+           HEADER
+        ============================================= */
+        .header-loja {
+            background: linear-gradient(135deg, #2c1f0a 0%, #5a3e1a 50%, #2c1f0a 100%);
+            padding: 28px 20px 22px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-loja::before {
+            content: '';
+            position: absolute;
+            top: -40px; left: -40px; right: -40px; bottom: -40px;
+            background: radial-gradient(ellipse at 50% 0%, rgba(212,175,55,0.18) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .logo-loja {
+            width: 80px; height: 80px;
+            border-radius: 50%;
+            border: 3px solid var(--gold-light);
+            object-fit: cover;
+            box-shadow: 0 0 0 6px rgba(212,175,55,0.15), var(--shadow-lg);
+        }
+
+        .nome-loja {
+            color: var(--gold-light);
+            font-size: 1.5em;
+            font-weight: 800;
+            letter-spacing: 5px;
+            text-align: center;
+        }
+
+        .subtitulo-loja {
+            color: rgba(212,175,55,0.6);
+            font-size: 0.68em;
+            letter-spacing: 7px;
+            text-transform: uppercase;
+        }
+
+        /* Badge admin */
+        .admin-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(212,175,55,0.15);
+            border: 1px solid rgba(212,175,55,0.35);
+            color: var(--gold-light);
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            text-transform: uppercase;
+        }
+
+        /* =============================================
+           NAVEGAÇÃO
+        ============================================= */
+        .nav-wrap {
+            background: var(--white);
+            border-bottom: 2px solid var(--gold-pale);
+            position: sticky;
+            top: 0;
+            z-index: 200;
+            box-shadow: 0 2px 12px rgba(180,150,80,0.10);
+        }
+
+        nav {
+            display: flex;
+            overflow-x: auto;
+            scrollbar-width: none;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        nav::-webkit-scrollbar { display: none; }
+
+        nav button {
+            background: none;
+            border: none;
+            color: var(--text3);
+            padding: 11px 14px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 10px;
+            white-space: nowrap;
+            flex-shrink: 0;
+            transition: color var(--transition), background var(--transition);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            min-width: 68px;
+            border-bottom: 3px solid transparent;
+        }
+
+        nav button .nav-icon { font-size: 17px; }
+        nav button .nav-label {
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        nav button:hover {
+            color: var(--gold);
+            background: var(--gold-bg);
+        }
+
+        nav button.active {
+            color: var(--gold);
+            border-bottom-color: var(--gold);
+            background: var(--gold-bg);
+        }
+
+        /* =============================================
+           CONTAINER
+        ============================================= */
+        .container {
+            padding: 16px;
+            max-width: 860px;
+            margin: 0 auto;
+        }
+
+        .aba { display: none; }
+        .aba.active { display: block; }
+
+        /* =============================================
+           CARDS
+        ============================================= */
+        .card {
+            background: var(--surface);
+            padding: 20px;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            margin-bottom: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .card-gold {
+            border-color: var(--gold-light);
+            background: var(--gold-bg);
+        }
+
+        .card-green { border-color: #a8d5b8; background: var(--green-bg); }
+        .card-red   { border-color: #f0b8b3; background: var(--red-bg);   }
+        .card-blue  { border-color: #a8c8f0; background: var(--blue-bg);  }
+
+        /* =============================================
+           TIPOGRAFIA
+        ============================================= */
+        h2 {
+            color: var(--gold);
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-size: 1em;
+            font-weight: 800;
+            padding-bottom: 12px;
+            margin-bottom: 18px;
+            border-bottom: 2px solid var(--gold-pale);
+        }
+
+        /* =============================================
+           FORMULÁRIOS
+        ============================================= */
+        label {
+            display: block;
+            margin-top: 14px;
+            color: var(--text2);
+            font-size: 0.72em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 11px 14px;
+            margin: 5px 0;
+            background: var(--surface2);
+            border: 1.5px solid var(--border);
+            color: var(--text);
+            border-radius: var(--radius);
+            font-size: 15px;
+            transition: border-color var(--transition), box-shadow var(--transition);
+            -webkit-appearance: none;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(184,134,11,0.12);
+            background: var(--white);
+        }
+
+        input::placeholder { color: var(--text3); font-size: 14px; }
+
+        /* =============================================
+           BOTÕES
+        ============================================= */
+        .btn-save {
+            background: linear-gradient(135deg, #b8860b, #d4af37, #b8860b);
+            color: white;
+            border: none;
+            padding: 14px;
+            width: 100%;
+            font-weight: 800;
+            border-radius: var(--radius);
+            cursor: pointer;
+            margin-top: 18px;
+            text-transform: uppercase;
+            font-size: 13px;
+            letter-spacing: 1.5px;
+            box-shadow: 0 3px 12px rgba(184,134,11,0.30);
+            transition: opacity var(--transition), transform var(--transition), box-shadow var(--transition);
+        }
+
+        .btn-save:hover {
+            opacity: 0.92;
+            transform: translateY(-1px);
+            box-shadow: 0 5px 18px rgba(184,134,11,0.38);
+        }
+
+        .btn-save:active { transform: translateY(0); }
+
+        .btn-outline {
+            background: var(--white);
+            border: 1.5px solid var(--border2);
+            color: var(--text2);
+            padding: 10px 14px;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all var(--transition);
+        }
+
+        .btn-outline:hover { border-color: var(--gold); color: var(--gold); background: var(--gold-bg); }
+
+        .btn-danger {
+            background: var(--red-bg);
+            border: 1.5px solid #f0b8b3;
+            color: var(--red);
+            padding: 7px 12px;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 700;
+            transition: all var(--transition);
+        }
+
+        .btn-danger:hover { background: #fce4e1; border-color: var(--red); }
+
+        .btn-success {
+            background: var(--green-bg);
+            border: 1.5px solid #a8d5b8;
+            color: var(--green);
+            padding: 10px 14px;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 700;
+            transition: all var(--transition);
+        }
+
+        .btn-success:hover { background: #d4edde; border-color: var(--green); }
+
+        .btn-gold {
+            background: var(--gold-bg);
+            border: 1.5px solid var(--gold-pale);
+            color: var(--gold);
+            padding: 10px 14px;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 700;
+            transition: all var(--transition);
+        }
+
+        .btn-gold:hover { background: var(--gold-pale); border-color: var(--gold); }
+
+        .btn-blue {
+            background: var(--blue-bg);
+            border: 1.5px solid #a8c8f0;
+            color: var(--blue);
+            padding: 10px 14px;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 700;
+            transition: all var(--transition);
+        }
+
+        .btn-purple {
+            background: var(--purple-bg);
+            border: 1.5px solid #c8a8f0;
+            color: var(--purple);
+            padding: 10px 14px;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 700;
+            transition: all var(--transition);
+        }
+
+        .btn-qtd {
+            background: var(--surface2);
+            color: var(--gold);
+            border: 1.5px solid var(--border2);
+            padding: 6px 13px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 800;
+            transition: all var(--transition);
+        }
+
+        .btn-qtd:hover { background: var(--gold-bg); border-color: var(--gold); }
+
+        .btn-pago {
+            background: var(--green-bg);
+            color: var(--green);
+            border: 1.5px solid #a8d5b8;
+            padding: 9px 12px;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 11px;
+        }
+
+        /* =============================================
+           ESTOQUE — ITEM CARD
+        ============================================= */
+        .item-lista {
+            display: flex;
+            align-items: center;
+            padding: 14px 16px;
+            background: var(--white);
+            border-radius: var(--radius);
+            border: 1.5px solid var(--border);
+            border-left: 4px solid var(--gold);
+            margin-bottom: 10px;
+            gap: 12px;
+            transition: box-shadow var(--transition), border-color var(--transition);
+            box-shadow: var(--shadow);
+        }
+
+        .item-lista:hover {
+            box-shadow: var(--shadow-md);
+            border-left-color: var(--gold-light);
+        }
+
+        .item-lista-info { flex: 1; min-width: 0; cursor: pointer; }
+
+        .item-lista-info .prod-nome {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text);
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .item-lista-info .prod-preco {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 4px;
+        }
+
+        .preco-tag {
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 6px;
+        }
+
+        .preco-pix    { background: var(--green-bg);  color: var(--green); }
+        .preco-cartao { background: var(--gold-bg);   color: var(--gold); }
+        .preco-custo  { background: var(--surface2);  color: var(--text3); }
+
+        .estoque-tag {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 9px;
+            border-radius: 6px;
+            margin-top: 3px;
+        }
+
+        .estoque-ok     { background: var(--green-bg); color: var(--green); }
+        .estoque-baixo  { background: var(--orange-bg); color: var(--orange); }
+        .estoque-zero   { background: var(--red-bg);   color: var(--red); }
+
+        .item-lista-acoes {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            align-items: flex-end;
+            flex-shrink: 0;
+        }
+
+        /* =============================================
+           TAGS / BADGES
+        ============================================= */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            padding: 3px 9px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .badge-pago     { background: var(--green-bg);  color: var(--green);  }
+        .badge-pendente { background: var(--orange-bg); color: var(--orange); }
+        .badge-fiado    { background: var(--gold-bg);   color: var(--gold);   }
+        .badge-cartao   { background: var(--blue-bg);   color: var(--blue);   }
+        .badge-pix      { background: var(--green-bg);  color: var(--green);  }
+        .badge-dinheiro { background: var(--surface2);  color: var(--text2);  }
+
+        /* =============================================
+           STAT CARDS — RELATÓRIO
+        ============================================= */
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+
+        .stat-card {
+            background: var(--white);
+            padding: 16px 12px;
+            border-radius: var(--radius-lg);
+            border: 1.5px solid var(--border);
+            text-align: center;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: var(--gold-light);
+        }
+
+        .stat-card.verde::before  { background: var(--green-light); }
+        .stat-card.vermelho::before { background: var(--red); }
+        .stat-card.azul::before   { background: var(--blue); }
+        .stat-card.roxo::before   { background: var(--purple); }
+        .stat-card.laranja::before { background: var(--orange); }
+
+        .stat-card h3 {
+            font-size: 9px;
+            color: var(--text3);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            font-weight: 700;
+        }
+
+        .stat-card p {
+            font-size: 1.15em;
+            color: var(--gold);
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .stat-card.verde  p { color: var(--green); }
+        .stat-card.vermelho p { color: var(--red); }
+        .stat-card.azul   p { color: var(--blue); }
+        .stat-card.roxo   p { color: var(--purple); }
+        .stat-card.laranja p { color: var(--orange); }
+
+        /* =============================================
+           DESTAQUE FINANCEIRO
+        ============================================= */
+        .fin-card {
+            border-radius: var(--radius-xl);
+            padding: 22px 20px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .fin-card-gold {
+            background: linear-gradient(135deg, #2c1f0a 0%, #4a3010 100%);
+            border: 1px solid rgba(212,175,55,0.3);
+        }
+
+        .fin-card-green {
+            background: linear-gradient(135deg, #0d3320 0%, #1a5a38 100%);
+            border: 1px solid rgba(46,168,90,0.3);
+        }
+
+        .fin-icon { font-size: 2em; margin-bottom: 6px; display: block; }
+
+        .fin-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            margin-bottom: 8px;
+            font-weight: 700;
+            display: block;
+        }
+
+        .fin-card-gold .fin-label { color: rgba(212,175,55,0.7); }
+        .fin-card-green .fin-label { color: rgba(46,168,90,0.7); }
+
+        .fin-valor {
+            font-size: 2.2em;
+            font-weight: 900;
+            letter-spacing: 1px;
+            display: block;
+            line-height: 1;
+        }
+
+        .fin-card-gold .fin-valor { color: var(--gold-light); }
+        .fin-card-green .fin-valor { color: #5ddb8a; }
+
+        .fin-sub {
+            font-size: 10px;
+            margin-top: 6px;
+            display: block;
+        }
+
+        .fin-card-gold .fin-sub { color: rgba(212,175,55,0.45); }
+        .fin-card-green .fin-sub { color: rgba(46,168,90,0.45); }
+
+        .fin-breakdown {
+            margin-top: 14px;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            padding-top: 12px;
+        }
+
+        .fin-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            padding: 3px 0;
+        }
+
+        .fin-card-gold .fin-row span:first-child { color: rgba(212,175,55,0.55); }
+        .fin-card-gold .fin-row span:last-child  { color: rgba(212,175,55,0.9); }
+        .fin-card-green .fin-row span:first-child { color: rgba(255,255,255,0.45); }
+        .fin-card-green .fin-row span:last-child  { color: rgba(255,255,255,0.85); }
+
+        /* =============================================
+           BUSCA
+        ============================================= */
+        .busca-wrap {
+            position: relative;
+            margin-bottom: 14px;
+        }
+
+        .busca-wrap input {
+            padding-left: 38px;
+            border-color: var(--border2);
+        }
+
+        .busca-wrap::before {
+            content: '🔍';
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 13px;
+            pointer-events: none;
+        }
+
+        /* =============================================
+           CARRINHO
+        ============================================= */
+        .carrinho-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 11px 14px;
+            background: var(--surface2);
+            border-radius: var(--radius);
+            margin-bottom: 7px;
+            border: 1.5px solid var(--border);
+            border-left: 4px solid var(--gold);
+        }
+
+        .carrinho-item strong {
+            font-size: 13px;
+            display: block;
+            color: var(--text);
+            margin-bottom: 2px;
+        }
+
+        .carrinho-item small { color: var(--text3); font-size: 12px; }
+
+        /* =============================================
+           LOADING
+        ============================================= */
+        .loading {
+            text-align: center;
+            color: var(--text3);
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .spinner {
+            width: 34px; height: 34px;
+            border: 3px solid var(--border);
+            border-top-color: var(--gold);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* =============================================
+           TOAST
+        ============================================= */
+        #toast-container {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            pointer-events: none;
+            width: 92%;
+            max-width: 380px;
+        }
+
+        .toast {
+            padding: 12px 20px;
+            border-radius: var(--radius);
+            font-size: 13px;
+            font-weight: 600;
+            text-align: center;
+            animation: toastIn 0.3s ease, toastOut 0.4s ease 2.5s forwards;
+            pointer-events: auto;
+            width: 100%;
+            box-shadow: var(--shadow-md);
+        }
+
+        .toast-success { background: var(--green-bg);  border: 1.5px solid #a8d5b8; color: var(--green);  }
+        .toast-error   { background: var(--red-bg);    border: 1.5px solid #f0b8b3; color: var(--red);    }
+        .toast-info    { background: var(--blue-bg);   border: 1.5px solid #a8c8f0; color: var(--blue);   }
+        .toast-warning { background: var(--gold-bg);   border: 1.5px solid var(--gold-pale); color: var(--gold); }
+
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateY(16px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes toastOut {
+            from { opacity: 1; }
+            to   { opacity: 0; transform: translateY(8px); }
+        }
+
+        /* =============================================
+           MODAL
+        ============================================= */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(44,31,10,0.55);
+            backdrop-filter: blur(3px);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .modal-overlay.open { display: flex; }
+
+        .modal-box {
+            background: var(--white);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-xl);
+            padding: 26px;
+            width: 100%;
+            max-width: 520px;
+            max-height: 92vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .modal-title {
+            color: var(--gold);
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            font-size: 1em;
+            font-weight: 800;
+            border-bottom: 2px solid var(--gold-pale);
+            padding-bottom: 12px;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        /* =============================================
+           PAINEL ADMIN RÁPIDO (Dashboard)
+        ============================================= */
+        .admin-quickbar {
+            background: var(--white);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 14px 16px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .admin-quickbar-title {
+            font-size: 10px;
+            color: var(--text3);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .quickbar-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+
+        .quickbar-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 10px 4px;
+            background: var(--surface2);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: all var(--transition);
+            text-decoration: none;
+        }
+
+        .quickbar-btn:hover {
+            background: var(--gold-bg);
+            border-color: var(--gold-pale);
+        }
+
+        .quickbar-btn .qb-icon { font-size: 20px; }
+        .quickbar-btn .qb-label {
+            font-size: 9px;
+            font-weight: 700;
+            color: var(--text2);
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            text-align: center;
+        }
+
+        /* =============================================
+           MINI RESUMO DO DIA
+        ============================================= */
+        .hoje-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .hoje-card {
+            background: var(--white);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius);
+            padding: 12px 10px;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        .hoje-card .hc-label {
+            font-size: 9px;
+            color: var(--text3);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .hoje-card .hc-val {
+            font-size: 1.1em;
+            font-weight: 800;
+            display: block;
+        }
+
+        /* =============================================
+           FIADO CARDS
+        ============================================= */
+        .fiado-card { margin-bottom: 14px; }
+
+        .fiado-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1.5px solid var(--border);
+        }
+
+        .fiado-cliente-nome {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .fiado-saldo-box {
+            padding: 12px 14px;
+            border-radius: var(--radius);
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .fiado-saldo-ok {
+            background: var(--green-bg);
+            border: 1.5px solid #a8d5b8;
+        }
+
+        .fiado-saldo-pendente {
+            background: var(--red-bg);
+            border: 1.5px solid #f0b8b3;
+        }
+
+        .fiado-btns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .fiado-btn-full { grid-column: 1 / -1; }
+
+        /* =============================================
+           HISTÓRICO CARDS
+        ============================================= */
+        .hist-card {
+            background: var(--white);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 14px 16px;
+            margin-bottom: 10px;
+            box-shadow: var(--shadow);
+        }
+
+        .hist-card-header strong {
+            font-size: 14px;
+            color: var(--text);
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        .hist-card-header small {
+            color: var(--text3);
+            font-size: 12px;
+            display: block;
+        }
+
+        .hist-valor-box {
+            background: var(--surface2);
+            border-radius: var(--radius);
+            padding: 10px 12px;
+            margin: 10px 0;
+            border: 1px solid var(--border);
+        }
+
+        .hist-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            padding: 2px 0;
+        }
+
+        .hist-row.total {
+            font-size: 13px;
+            font-weight: 700;
+            border-top: 1px solid var(--border);
+            padding-top: 6px;
+            margin-top: 4px;
+        }
+
+        .hist-btns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        /* =============================================
+           ADICIONAR BOX (VENDA)
+        ============================================= */
+        .adicionar-box {
+            background: var(--surface2);
+            border: 1.5px dashed var(--border2);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .adicionar-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* =============================================
+           RESUMO PAGAMENTO
+        ============================================= */
+        .resumo-pag-box {
+            background: var(--surface2);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius);
+            padding: 14px;
+            margin: 8px 0;
+        }
+
+        .rp-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            padding: 3px 0;
+            color: var(--text2);
+        }
+
+        .rp-row.total {
+            font-size: 14px;
+            font-weight: 800;
+            border-top: 1.5px solid var(--border);
+            padding-top: 8px;
+            margin-top: 6px;
+            color: var(--text);
+        }
+
+        /* =============================================
+           CHECKBOX RETIRADA
+        ============================================= */
+        .retirada-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 14px;
+            background: var(--surface2);
+            border-radius: var(--radius);
+            border: 1.5px solid var(--border);
+            margin: 10px 0;
+            cursor: pointer;
+            transition: border-color var(--transition), background var(--transition);
+        }
+
+        .retirada-box:hover { border-color: var(--gold-pale); background: var(--gold-bg); }
+
+        .retirada-box input[type="checkbox"] {
+            width: 18px; height: 18px;
+            accent-color: var(--gold);
+            cursor: pointer;
+            flex-shrink: 0;
+            margin: 0;
+        }
+
+        /* =============================================
+           SEÇÃO SEPARADOR
+        ============================================= */
+        .section-divider {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 16px 0 12px;
+        }
+
+        .section-divider span {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            white-space: nowrap;
+        }
+
+        .section-divider::before,
+        .section-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        /* =============================================
+           ALERTA ESTOQUE BAIXO
+        ============================================= */
+        .alerta-estoque {
+            background: var(--orange-bg);
+            border: 1.5px solid #f5c882;
+            border-radius: var(--radius);
+            padding: 10px 14px;
+            margin-bottom: 12px;
+            font-size: 12px;
+            color: var(--orange);
+            font-weight: 600;
+            display: none;
+        }
+
+        /* =============================================
+           PREVIEW PREÇO
+        ============================================= */
+        .preco-preview {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .preco-box {
+            background: var(--surface2);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius);
+            padding: 12px;
+            text-align: center;
+        }
+
+        .preco-box .pb-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; display: block; margin-bottom: 5px; }
+        .preco-box .pb-val   { font-size: 1.3em; font-weight: 800; display: block; }
+        .preco-box.pix   { border-color: #a8d5b8; background: var(--green-bg); }
+        .preco-box.pix   .pb-val { color: var(--green); }
+        .preco-box.cartao { border-color: var(--gold-pale); background: var(--gold-bg); }
+        .preco-box.cartao .pb-val { color: var(--gold); }
+
+        /* =============================================
+           LUCRO PREVIEW
+        ============================================= */
+        .lucro-preview {
+            background: var(--green-bg);
+            border: 1.5px solid #a8d5b8;
+            border-radius: var(--radius);
+            padding: 14px 16px;
+            margin-top: 12px;
+            display: none;
+        }
+
+        .lp-title {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--green);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* =============================================
+           PARCELAS
+        ============================================= */
+        .parcela-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            padding: 7px 10px;
+            margin: 4px 0;
+            border-radius: 6px;
+        }
+
+        .parcela-paga    { background: var(--green-bg);  border-left: 3px solid var(--green); }
+        .parcela-parcial { background: var(--orange-bg); border-left: 3px solid var(--orange); }
+        .parcela-pend    { background: var(--red-bg);    border-left: 3px solid var(--red); }
+
+        /* =============================================
+           RESPONSIVO
+        ============================================= */
+        @media (max-width: 500px) {
+            .grid-3 { grid-template-columns: 1fr 1fr; }
+            .quickbar-grid { grid-template-columns: repeat(4, 1fr); }
+            .hoje-grid { grid-template-columns: 1fr 1fr; }
+            .fin-valor { font-size: 1.7em; }
+            .nome-loja { font-size: 1.2em; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- TOAST -->
+<div id="toast-container"></div>
+
+<!-- HEADER -->
+<header class="header-loja">
+    <img src="logo.png.jpeg" alt="BW Parfum" class="logo-loja"
+         onerror="this.src='https://cdn-icons-png.flaticon.com/512/3002/3002655.png'">
+    <h1 class="nome-loja">BW PARFUM IMPORTS</h1>
+    <span class="subtitulo-loja">Luxury Fragrance</span>
+    <div class="admin-badge">⚙️ Painel Administrativo</div>
+</header>
+
+<!-- NAV -->
+<div class="nav-wrap">
+    <nav>
+        <button onclick="abrirAba('dashboard')" id="nav-dashboard" class="active">
+            <span class="nav-icon">🏠</span>
+            <span class="nav-label">Início</span>
+        </button>
+        <button onclick="abrirAba('cadastro')" id="nav-cadastro">
+            <span class="nav-icon">📦</span>
+            <span class="nav-label">Cadastro</span>
+        </button>
+        <button onclick="abrirAba('perfumes')" id="nav-perfumes">
+            <span class="nav-icon">💎</span>
+            <span class="nav-label">Estoque</span>
+        </button>
+        <button onclick="abrirAba('vendas')" id="nav-vendas">
+            <span class="nav-icon">🛒</span>
+            <span class="nav-label">Vender</span>
+        </button>
+        <button onclick="abrirAba('vendidos')" id="nav-vendidos">
+            <span class="nav-icon">📋</span>
+            <span class="nav-label">Histórico</span>
+        </button>
+        <button onclick="abrirAba('fiado')" id="nav-fiado">
+            <span class="nav-icon">⚠️</span>
+            <span class="nav-label">Fiado</span>
+        </button>
+        <button onclick="abrirAba('clientes')" id="nav-clientes">
+            <span class="nav-icon">👥</span>
+            <span class="nav-label">Clientes</span>
+        </button>
+        <button onclick="abrirAba('relatorios')" id="nav-relatorios">
+            <span class="nav-icon">📊</span>
+            <span class="nav-label">Relatórios</span>
+        </button>
+    </nav>
+</div>
+
+<div class="container">
+
+    <!-- ===================== DASHBOARD ===================== -->
+    <section id="dashboard" class="aba active">
+
+        <!-- Resumo do Dia -->
+        <div class="section-divider"><span>📅 Resumo de Hoje</span></div>
+        <div class="hoje-grid">
+            <div class="hoje-card">
+                <span class="hc-label">Vendas Hoje</span>
+                <span class="hc-val" id="dash-qtd-hoje" style="color:var(--gold);">—</span>
+            </div>
+            <div class="hoje-card">
+                <span class="hc-label">Faturado</span>
+                <span class="hc-val" id="dash-fat-hoje" style="color:var(--green);">—</span>
+            </div>
+            <div class="hoje-card">
+                <span class="hc-label">Fiados Abertos</span>
+                <span class="hc-val" id="dash-fiados" style="color:var(--red);">—</span>
+            </div>
+        </div>
+
+        <!-- Atalhos Rápidos -->
+        <div class="admin-quickbar">
+            <div class="admin-quickbar-title">⚡ Acesso Rápido</div>
+            <div class="quickbar-grid">
+                <button class="quickbar-btn" onclick="abrirAba('vendas')">
+                    <span class="qb-icon">🛒</span>
+                    <span class="qb-label">Nova Venda</span>
+                </button>
+                <button class="quickbar-btn" onclick="abrirAba('cadastro')">
+                    <span class="qb-icon">➕</span>
+                    <span class="qb-label">Cadastrar</span>
+                </button>
+                <button class="quickbar-btn" onclick="abrirAba('fiado')">
+                    <span class="qb-icon">⚠️</span>
+                    <span class="qb-label">Fiados</span>
+                </button>
+                <button class="quickbar-btn" onclick="abrirAba('relatorios')">
+                    <span class="qb-icon">📊</span>
+                    <span class="qb-label">Relatório</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Estoque Crítico -->
+        <div class="section-divider"><span>⚠️ Estoque Crítico</span></div>
+        <div id="dash-estoque-critico">
+            <div class="loading"><div class="spinner"></div><span>Verificando...</span></div>
+        </div>
+
+        <!-- Últimas Vendas -->
+        <div class="section-divider"><span>🕐 Últimas Vendas</span></div>
+        <div id="dash-ultimas-vendas">
+            <div class="loading"><div class="spinner"></div><span>Carregando...</span></div>
+        </div>
+
+    </section>
+
+    <!-- ===================== CADASTRO ===================== -->
+    <section id="cadastro" class="aba">
+        <div class="card">
+            <h2>Cadastrar Perfume</h2>
+
+            <label>Nome do Perfume</label>
+            <input type="text" id="p-nome" placeholder="Ex: POLO BLACK 125ML">
+
+            <label>Quantidade em Estoque</label>
+            <input type="number" id="p-qtd" value="1" min="1">
+
+            <label>Custo Unitário (R$)</label>
+            <input type="number" id="p-custo" placeholder="0,00" oninput="window.calcularPreco()">
+
+            <label>Frete Unitário (R$)</label>
+            <input type="number" id="p-frete" value="30" oninput="window.calcularPreco()">
+
+            <label>Deslocamento (R$)</label>
+            <input type="number" id="p-deslocamento" value="15" oninput="window.calcularPreco()">
+
+            <label>Margem de Lucro (%)</label>
+            <input type="number" id="p-lucro" value="40" oninput="window.calcularPreco()">
+
+            <!-- Preview preços -->
+            <div class="preco-preview">
+                <div class="preco-box pix">
+                    <span class="pb-label">💚 PIX / Dinheiro</span>
+                    <span class="pb-val" id="res-pix">R$ 0,00</span>
+                </div>
+                <div class="preco-box cartao">
+                    <span class="pb-label">💳 Cartão (+12%)</span>
+                    <span class="pb-val" id="res-cartao">R$ 0,00</span>
+                </div>
+            </div>
+
+            <!-- Lucro preview -->
+            <div class="lucro-preview" id="res-lucro-msg">
+                <div class="lp-title">💰 Lucro estimado por unidade</div>
+                <div id="res-lucro-pix"    style="font-size:13px; color:var(--green); font-weight:700; margin-bottom:4px;"></div>
+                <div id="res-lucro-cartao" style="font-size:12px; color:var(--text3); margin-bottom:8px;"></div>
+                <div id="res-lucro-dica"   style="font-size:11px; color:var(--text3); border-top:1px solid #a8d5b8; padding-top:8px; line-height:1.6;"></div>
+            </div>
+
+            <button class="btn-save" onclick="window.salvarProduto()">
+                💾 SALVAR NO ESTOQUE
+            </button>
+        </div>
+    </section>
+
+    <!-- ===================== ESTOQUE ===================== -->
+    <section id="perfumes" class="aba">
+        <h2>Produtos em Estoque</h2>
+        <div id="alerta-estoque-baixo" class="alerta-estoque"></div>
+        <div class="busca-wrap">
+            <input type="text" id="busca-estoque"
+                placeholder="Buscar perfume pelo nome..."
+                oninput="window.filtrarEstoque()">
+        </div>
+        <div id="lista-estoque">
+            <div class="loading"><div class="spinner"></div><span>Carregando estoque...</span></div>
+        </div>
+    </section>
+
+    <!-- ===================== VENDAS ===================== -->
+    <section id="vendas" class="aba">
+        <div class="card">
+            <h2>Lançar Nova Venda</h2>
+
+            <!-- Dados do cliente -->
+            <div class="section-divider"><span>👤 Dados do Cliente</span></div>
+
+            <label>Data da Venda</label>
+            <input type="date" id="v-data">
+
+            <label>Nome do Cliente</label>
+            <input type="text" id="v-cliente"
+                list="lista-sugestao-clientes"
+                placeholder="Nome completo...">
+            <datalist id="lista-sugestao-clientes"></datalist>
+
+            <label>WhatsApp</label>
+            <input type="text" id="v-contato" placeholder="(99) 99999-9999">
+
+            <label>Endereço de Entrega</label>
+            <input type="text" id="v-endereco" placeholder="Rua, número, bairro">
+
+            <!-- Pagamento -->
+            <div class="section-divider"><span>💳 Pagamento</span></div>
+
+            <label>Forma de Pagamento</label>
+            <select id="v-pagamento" onchange="window.toggleTaxaCartao(this.value)">
+                <option value="PIX">💚 PIX</option>
+                <option value="Dinheiro">💵 Dinheiro</option>
+                <option value="Cartão">💳 Cartão de Crédito/Débito</option>
+                <option value="Fiado">⚠️ Fiado (Parcelado)</option>
+            </select>
+
+            <!-- Retirada -->
+            <div class="retirada-box" onclick="document.getElementById('v-retirada').click()">
+                <input type="checkbox" id="v-retirada"
+                    onclick="event.stopPropagation()"
+                    onchange="window.atualizarResumoPagamento()">
+                <div>
+                    <div style="font-size:13px; font-weight:700; color:var(--text);">🏠 Cliente retirou pessoalmente</div>
+                    <div style="font-size:11px; color:var(--text3); margin-top:2px;">Marcado = frete não é despesa sua</div>
+                </div>
+            </div>
+
+            <!-- Fiado -->
+            <div id="div-fiado" style="display:none; background:var(--gold-bg);
+                border:1.5px dashed var(--gold-pale); border-radius:var(--radius);
+                padding:14px; margin:10px 0;">
+                <label style="margin-top:0; color:var(--gold);">📋 Número de Parcelas</label>
+                <input type="number" id="v-parcelas" value="1" min="1" max="24"
+                    style="border-color:var(--gold-pale);"
+                    onchange="window.gerarCamposDataParcelas()">
+                <div id="campos-datas-parcelas"></div>
+            </div>
+
+            <!-- Carrinho -->
+            <div class="section-divider"><span>🛒 Itens da Venda</span></div>
+
+            <div class="adicionar-box">
+                <div class="adicionar-title">➕ Adicionar Perfume ao Carrinho</div>
+
+                <label style="margin-top:0;">🌸 Perfume</label>
+                <input type="text" id="v-perfume"
+                    list="lista-perfumes-venda"
+                    placeholder="Digite ou selecione o perfume..."
+                    onchange="window.autoPreencherVenda()"
+                    oninput="window.autoPreencherVenda()">
+                <datalist id="lista-perfumes-venda"></datalist>
+
+                <div class="grid-2" style="gap:10px;">
+                    <div>
+                        <label>Quantidade</label>
+                        <input type="number" id="v-qtd-item" value="1" min="1">
+                    </div>
+                    <div>
+                        <label>Valor Unitário (R$)</label>
+                        <input type="number" id="v-valor-venda"
+                            placeholder="Auto..."
+                            step="0.01"
+                            style="border-color:var(--gold-pale);">
+                    </div>
+                </div>
+
+                <button onclick="window.adicionarItemCarrinho()"
+                    style="width:100%; padding:13px; margin-top:12px;
+                    background:linear-gradient(135deg,var(--green),var(--green-light));
+                    color:white; border:none; border-radius:var(--radius);
+                    font-weight:800; font-size:13px; cursor:pointer;
+                    box-shadow:0 3px 10px rgba(26,122,60,0.25);
+                    letter-spacing:0.5px;">
+                    ➕ ADICIONAR AO CARRINHO
+                </button>
+            </div>
+
+            <!-- Lista carrinho -->
+            <div id="lista-carrinho"></div>
+
+            <!-- Desconto -->
+            <div id="div-desconto" style="display:none; margin:10px 0;">
+                <label>🏷️ Aplicar Desconto</label>
+                <div style="display:flex; gap:8px; margin-top:6px;">
+                    <select id="v-desc-tipo" onchange="window.aplicarDesconto()"
+                        style="width:130px; flex-shrink:0;">
+                        <option value="reais">R$ Reais</option>
+                        <option value="porcento">% Porcento</option>
+                    </select>
+                    <input type="number" id="v-desconto"
+                        placeholder="0,00"
+                        oninput="window.aplicarDesconto()"
+                        min="0" step="0.01">
+                </div>
+            </div>
+
+            <!-- Resumo desconto -->
+            <div id="resumo-desconto" style="display:none;">
+                <div class="resumo-pag-box">
+                    <div class="rp-row">
+                        <span>Subtotal:</span>
+                        <span id="desc-valor-original"></span>
+                    </div>
+                    <div class="rp-row" style="color:var(--red);">
+                        <span>🏷️ Desconto:</span>
+                        <span id="desc-valor-desconto"></span>
+                    </div>
+                    <div class="rp-row total">
+                        <span style="color:var(--gold);">✅ Total Final:</span>
+                        <span id="desc-valor-final" style="color:var(--green);"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total carrinho -->
+            <div id="div-total-carrinho" style="display:none; margin:12px 0;
+                background:var(--gold-bg); border:2px solid var(--gold-pale);
+                border-radius:var(--radius-lg); padding:16px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                    <span style="font-size:12px; color:var(--text2); text-transform:uppercase; letter-spacing:1px; font-weight:700;">💰 Total da Venda:</span>
+                    <span id="total-carrinho-valor" style="color:var(--gold); font-size:1.6em; font-weight:900;">R$ 0,00</span>
+                </div>
+
+                <!-- PIX/Dinheiro -->
+                <div id="resumo-pix" style="display:none; border-top:1px solid var(--gold-pale); padding-top:10px; margin-top:8px;">
+                    <div class="rp-row"><span style="color:var(--text2);">💚 Cliente paga:</span><span id="res-val-pix" style="font-weight:700; color:var(--green);"></span></div>
+                    <div class="rp-row total" style="color:var(--green);"><span>✅ Você recebe:</span><span id="res-liq-pix" style="font-size:1.1em;"></span></div>
+                </div>
+
+                <!-- Cartão -->
+                <div id="resumo-cartao" style="display:none; border-top:1px solid var(--gold-pale); padding-top:10px; margin-top:8px;">
+                    <div class="rp-row"><span style="color:var(--text2);">💳 Cliente paga:</span><span id="res-val-cartao" style="font-weight:700; color:var(--text);"></span></div>
+                    <div class="rp-row" style="color:var(--red);"><span>📉 Taxa (<span id="res-perc-cartao">12</span>%):</span><span id="res-taxa-cartao"></span></div>
+                    <div class="rp-row total" style="color:var(--gold);"><span>✅ Você recebe:</span><span id="res-liq-cartao" style="font-size:1.1em;"></span></div>
+                </div>
+
+                <!-- Fiado -->
+                <div id="resumo-fiado" style="display:none; border-top:1px solid var(--gold-pale); padding-top:10px; margin-top:8px;">
+                    <div class="rp-row"><span style="color:var(--text2);">⚠️ Total fiado:</span><span id="res-val-fiado" style="font-weight:700; color:var(--gold);"></span></div>
+                    <div class="rp-row"><span style="color:var(--text2);">📋 Parcelas:</span><span id="res-qtd-fiado" style="font-weight:700; color:var(--text);"></span></div>
+                    <div class="rp-row total" style="color:var(--gold);"><span>📅 Por parcela:</span><span id="res-parc-fiado" style="font-size:1.1em;"></span></div>
+                </div>
+            </div>
+
+            <button class="btn-save" onclick="window.salvarVenda()" style="margin-top:8px;">
+                ✅ FINALIZAR VENDA
+            </button>
+        </div>
+    </section>
+
+    <!-- ===================== HISTÓRICO ===================== -->
+    <section id="vendidos" class="aba">
+        <h2>Histórico de Vendas</h2>
+        <div class="card">
+            <div class="busca-wrap">
+                <input type="text" id="busca-historico"
+                    placeholder="Pesquisar perfume ou cliente..."
+                    oninput="window.filtrarHistorico()">
+            </div>
+            <div class="grid-2" style="margin-bottom:0;">
+                <div>
+                    <label>Desde</label>
+                    <input type="date" id="filtro-hist-ini" onchange="window.carregarVendidos()">
+                </div>
+                <div>
+                    <label>Até</label>
+                    <input type="date" id="filtro-hist-fim" onchange="window.carregarVendidos()">
+                </div>
+            </div>
+        </div>
+        <div id="lista-vendidos">
+            <div class="loading"><div class="spinner"></div><span>Carregando histórico...</span></div>
+        </div>
+    </section>
+
+    <!-- ===================== FIADO ===================== -->
+    <section id="fiado" class="aba">
+        <h2>Monitoramento de Fiados</h2>
+        <!-- Resumo fiados -->
+        <div class="grid-2" style="margin-bottom:14px;">
+            <div class="stat-card vermelho">
+                <h3>💰 Total em Aberto</h3>
+                <p id="fiado-total-aberto">R$ 0,00</p>
+            </div>
+            <div class="stat-card laranja">
+                <h3>📋 Clientes com Fiado</h3>
+                <p id="fiado-qtd-clientes">0</p>
+            </div>
+        </div>
+        <div id="lista-fiados">
+            <div class="loading"><div class="spinner"></div><span>Carregando fiados...</span></div>
+        </div>
+    </section>
+
+    <!-- ===================== CLIENTES ===================== -->
+    <section id="clientes" class="aba">
+        <h2>Banco de Clientes</h2>
+        <div class="busca-wrap" style="margin-bottom:14px;">
+            <input type="text" id="busca-clientes"
+                placeholder="Pesquisar cliente..."
+                oninput="window.filtrarClientes()">
+        </div>
+        <div id="lista-clientes">
+            <div class="loading"><div class="spinner"></div><span>Carregando clientes...</span></div>
+        </div>
+    </section>
+
+    <!-- ===================== RELATÓRIOS ===================== -->
+    <section id="relatorios" class="aba">
+        <h2>Painel Financeiro</h2>
+
+        <!-- Cards financeiros destaque -->
+        <div class="fin-card fin-card-gold">
+            <span class="fin-icon">💎</span>
+            <span class="fin-label">TOTAL GERAL VENDIDO</span>
+            <span class="fin-valor" id="rel-total-geral">R$ 0,00</span>
+            <span class="fin-sub">Pix + Cartão + Dinheiro + Fiado Pago + Pendente</span>
+        </div>
+
+        <div class="fin-card fin-card-green">
+            <span class="fin-icon">📈</span>
+            <span class="fin-label">LUCRO ESTIMADO</span>
+            <span class="fin-valor" id="rel-lucro">R$ 0,00</span>
+            <span class="fin-sub">Vendas pagas − custo − frete − deslocamento</span>
+            <div class="fin-breakdown">
+                <div class="fin-row"><span>💰 Total recebido:</span><span id="rel-lucro-receita">R$ 0,00</span></div>
+                <div class="fin-row"><span>🛍️ Custo dos produtos:</span><span id="rel-lucro-custo">R$ 0,00</span></div>
+                <div class="fin-row"><span>🚚 Frete (entregas):</span><span id="rel-lucro-frete">R$ 0,00</span></div>
+                <div class="fin-row"><span>🗺️ Deslocamento:</span><span id="rel-lucro-desloc">R$ 0,00</span></div>
+            </div>
+        </div>
+
+        <!-- Filtro -->
+        <div class="card">
+            <p style="color:var(--text3); font-size:12px; text-align:center; margin-bottom:12px;">
+                📅 Exibindo o mês atual — altere para filtrar outro período
+            </p>
+            <div class="grid-2">
+                <div>
+                    <label>Início</label>
+                    <input type="date" id="rel-inicio" onchange="window.gerarRelatorio()">
+                </div>
+                <div>
+                    <label>Fim</label>
+                    <input type="date" id="rel-fim" onchange="window.gerarRelatorio()">
+                </div>
+            </div>
+            <button class="btn-save" style="margin-top:12px;" onclick="window.gerarRelatorio()">
+                🔍 FILTRAR PERÍODO
+            </button>
+        </div>
+
+        <!-- Grid stats -->
+        <div class="grid-2" style="margin-bottom:12px;">
+            <div class="stat-card">
+                <h3>💰 Faturamento</h3>
+                <p id="rel-total">R$ 0,00</p>
+            </div>
+            <div class="stat-card">
+                <h3>🛍️ Nº de Vendas</h3>
+                <p id="rel-qtd">0</p>
+            </div>
+            <div class="stat-card verde">
+                <h3>💚 Total PIX</h3>
+                <p id="rel-pix">R$ 0,00</p>
+            </div>
+            <div class="stat-card azul">
+                <h3>💳 Cartão Líquido</h3>
+                <p id="rel-cartao">R$ 0,00</p>
+            </div>
+            <div class="stat-card roxo">
+                <h3>💵 Dinheiro</h3>
+                <p id="rel-dinheiro">R$ 0,00</p>
+            </div>
+            <div class="stat-card">
+                <h3>📋 Fiado Pago</h3>
+                <p id="rel-fiado">R$ 0,00</p>
+            </div>
+            <div class="stat-card vermelho">
+                <h3>📉 Taxa Operadora</h3>
+                <p id="rel-taxa-cartao">R$ 0,00</p>
+            </div>
+            <div class="stat-card azul">
+                <h3>💳 Cartão Bruto</h3>
+                <p id="rel-cartao-bruto">R$ 0,00</p>
+            </div>
+        </div>
+
+        <!-- Fiado pendente -->
+        <div class="card card-red" style="text-align:center; margin-bottom:14px;">
+            <h3 style="color:var(--red); margin-bottom:6px; font-size:12px;">⚠️ TOTAL FIADO PENDENTE</h3>
+            <p id="rel-pendente" style="font-size:1.7em; color:var(--red); font-weight:800;">R$ 0,00</p>
+        </div>
+
+        <!-- Mais vendido -->
+        <div class="card card-gold" style="text-align:center; margin-bottom:14px;">
+            <h3 style="color:var(--gold); margin-bottom:6px; font-size:12px;">🏆 MAIS VENDIDO NO PERÍODO</h3>
+            <p id="rel-mais-vendido" style="font-size:1.1em; color:var(--gold); font-weight:800;">—</p>
+        </div>
+
+        <!-- Lista vendas -->
+        <div class="section-divider" style="margin-top:4px;"><span>📋 Vendas do Período</span></div>
+        <div id="lista-rel-vendas">
+            <div style="text-align:center; color:var(--text3); padding:20px; font-size:13px;">
+                Selecione um período e clique em Filtrar
+            </div>
+        </div>
+
+    </section>
+</div>
+
+<!-- ===================== MODAL EDIÇÃO PRODUTO ===================== -->
+<div id="modal-editar-produto" class="modal-overlay">
+    <div class="modal-box">
+        <h3 class="modal-title">✏️ Editar Perfume</h3>
+        <input type="hidden" id="edit-prod-id">
+
+        <label>Nome do Perfume</label>
+        <input type="text" id="edit-prod-nome">
+
+        <label>Quantidade em Estoque</label>
+        <input type="number" id="edit-prod-qtd">
+
+        <label>Custo Unitário (R$)</label>
+        <input type="number" id="edit-prod-custo" oninput="window.recalcularEdicaoProduto()">
+
+        <label>Frete Unitário (R$)</label>
+        <input type="number" id="edit-prod-frete" oninput="window.recalcularEdicaoProduto()">
+
+        <label>Deslocamento (R$)</label>
+        <input type="number" id="edit-prod-desloc" oninput="window.recalcularEdicaoProduto()">
+
+        <label>Margem de Lucro (%)</label>
+        <input type="number" id="edit-prod-margem" oninput="window.recalcularEdicaoProduto()">
+
+        <div class="preco-preview" style="margin-top:14px;">
+            <div class="preco-box pix">
+                <span class="pb-label">💚 PIX / Dinheiro</span>
+                <span class="pb-val" id="edit-res-pix">R$ 0,00</span>
+            </div>
+            <div class="preco-box cartao">
+                <span class="pb-label">💳 Cartão</span>
+                <span class="pb-val" id="edit-res-cartao">R$ 0,00</span>
+            </div>
+        </div>
+
+        <div style="text-align:center; margin-top:10px; padding:10px;
+            background:var(--green-bg); border:1px solid #a8d5b8;
+            border-radius:var(--radius); font-size:13px;">
+            💰 Lucro estimado: <strong id="edit-res-lucro" style="color:var(--green);">R$ 0,00</strong>
+        </div>
+
+        <div class="modal-actions">
+            <button onclick="window.fecharModalEditarProduto()"
+                class="btn-outline" style="flex:1; padding:12px;">
+                ❌ Cancelar
+            </button>
+            <button onclick="window.salvarEdicaoProduto()"
+                class="btn-save" style="flex:2; margin-top:0; padding:12px;">
+                💾 SALVAR
+            </button>
+        </div>
+    </div>
+</div>
+
+<script type="module" src="./app.js"></script>
+<script>
+/* =============================================
+   NAVEGAÇÃO
+============================================= */
+function abrirAba(id) {
+    document.querySelectorAll('.aba').forEach(a => a.classList.remove('active'));
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+    document.getElementById(id)?.classList.add('active');
+    document.getElementById('nav-' + id)?.classList.add('active');
+
+    if (id === 'dashboard')  carregarDashboard();
+    if (id === 'perfumes')   window.carregarEstoque?.();
+    if (id === 'vendas')     window.carregarEstoque?.();
+    if (id === 'vendidos')   window.carregarVendidos?.();
+    if (id === 'fiado')      window.carregarFiados?.();
+    if (id === 'clientes')   window.carregarClientes?.();
+    if (id === 'relatorios') window.gerarRelatorio?.();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const inputData = document.getElementById('v-data');
+    if (inputData) inputData.valueAsDate = new Date();
+    carregarDashboard();
+});
+
+/* =============================================
+   DASHBOARD
+============================================= */
+async function carregarDashboard() {
+    try {
+        // Resumo do dia
+        const hoje = new Date().toISOString().split('T')[0];
+        const vendasSnap = await window._getDocs?.(
+            window._query?.(window._collection?.(window._db, "vendas"),
+            window._where?.("data", "==", hoje))
+        );
+
+        // Usa diretamente se disponível via app.js (globals)
+        const dashFat   = document.getElementById('dash-fat-hoje');
+        const dashQtd   = document.getElementById('dash-qtd-hoje');
+        const dashFiado = document.getElementById('dash-fiados');
+
+        // Chama função do app.js se disponível
+        if (typeof window.carregarDashboardData === 'function') {
+            window.carregarDashboardData();
+        } else {
+            // Fallback: atualiza quando app.js estiver pronto
+            setTimeout(() => {
+                if (typeof window.carregarDashboardData === 'function') {
+                    window.carregarDashboardData();
+                }
+            }, 800);
+        }
+    } catch(e) {
+        console.warn('Dashboard:', e);
+    }
+}
+
+/* =============================================
+   BUSCA CLIENTES (aba clientes)
+============================================= */
+window.filtrarClientes = function() {
+    const termo = (document.getElementById('busca-clientes')?.value || '').toUpperCase();
+    document.querySelectorAll('#lista-clientes .card').forEach(card => {
+        const texto = card.innerText.toUpperCase();
+        card.style.display = texto.includes(termo) ? '' : 'none';
+    });
+};
+
+/* =============================================
+   TOAST
+============================================= */
+window.showToast = function(msg, tipo = 'success', duracao = 2800) {
+    const container = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${tipo}`;
+    toast.textContent = msg;
+    container.appendChild(toast);
+    setTimeout(() => toast.remove(), duracao);
+};
+
+/* =============================================
+   MODAL CONFIRMAÇÃO
+============================================= */
+window.showConfirm = function(msg, onConfirm) {
+    const overlay = document.createElement('div');
+    overlay.style.cssText = `
+        position:fixed; top:0; left:0; width:100%; height:100%;
+        background:rgba(44,31,10,0.55); backdrop-filter:blur(3px);
+        z-index:99999; display:flex; align-items:center;
+        justify-content:center; padding:20px;`;
+
+    overlay.innerHTML = `
+        <div style="background:white; border:1.5px solid var(--border);
+            border-radius:20px; padding:28px; width:100%; max-width:360px;
+            text-align:center; box-shadow:var(--shadow-lg);">
+            <div style="font-size:36px; margin-bottom:12px;">⚠️</div>
+            <p style="color:var(--text); font-size:14px; line-height:1.6;
+                margin:0 0 22px 0; white-space:pre-line;">${msg}</p>
+            <div style="display:flex; gap:10px;">
+                <button id="confirm-no"
+                    style="flex:1; padding:12px; background:var(--surface2);
+                    border:1.5px solid var(--border); color:var(--text2);
+                    border-radius:var(--radius); cursor:pointer;
+                    font-weight:600; font-size:13px;">
+                    Cancelar
+                </button>
+                <button id="confirm-yes"
+                    style="flex:1; padding:12px;
+                    background:linear-gradient(135deg,#b8860b,#d4af37);
+                    color:white; border:none; border-radius:var(--radius);
+                    cursor:pointer; font-weight:800; font-size:13px;
+                    box-shadow:0 3px 10px rgba(184,134,11,0.3);">
+                    Confirmar
+                </button>
+            </div>
+        </div>`;
+
+    document.body.appendChild(overlay);
+    overlay.querySelector('#confirm-yes').onclick = () => { overlay.remove(); onConfirm(); };
+    overlay.querySelector('#confirm-no').onclick  = () => overlay.remove();
+};
+
+/* =============================================
+   MODAL PRODUTO — abrir/fechar
+============================================= */
+window.fecharModalEditarProduto = function() {
+    document.getElementById('modal-editar-produto')?.classList.remove('open');
+};
+
+window.addEventListener('load', () => {
+    const origFn = window.abrirModalEditarProduto;
+    if (origFn) {
+        window.abrirModalEditarProduto = function(id) {
+            origFn(id);
+            document.getElementById('modal-editar-produto')?.classList.add('open');
+        };
+    }
+});
+</script>
+
+</body>
+</html>
